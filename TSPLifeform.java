@@ -2,20 +2,17 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics;
+import java.util.Collection;
 
-class TSPLifeform extends LifeForm {
+class TSPLifeform extends Lifeform {
 	
 	static double[][] coordinates;
 	static double initialscore;
-    double currentscore;
+	double length;
 	
 	//sets the genome 
-	public TSPLifeform(final Integer[] genome){
+	public TSPLifeform(final Collection genome){
 		super(genome);
 
 		if(coordinates==null){
@@ -31,45 +28,61 @@ class TSPLifeform extends LifeForm {
 	}
 	
 	//sexual reproduction
-	public Integer[] mutate(final Integer[] genome1, final Integer[] genome2){
+	public ArrayList<Integer> mutate(final Collection genome1, final Collection genome2){
 		return null;
 	}
 	
 	//asexual reproduction
-	public Integer[] mutate(final Integer[] genome){
-		Integer[] rtn=new Integer[genome.length];
-		for(int i=0; i<genome.length; i++)rtn[i]=genome[i];
+	public ArrayList<Integer> mutate(final Collection genome){
+		ArrayList<Integer> rtn=new ArrayList<Integer>();
+		rtn.addAll(genome);
+			
+		int index1=(new Random()).nextInt(rtn.size());
+		int p1=rtn.get(index1);
+		int index2=(new Random()).nextInt(rtn.size());
+		int p2=rtn.get(index2);
 		
-		int index1=(new Random()).nextInt(rtn.length);
-		int index2=(new Random()).nextInt(rtn.length);
-		int tmp=rtn[index1];
-		rtn[index1]=rtn[index2];
-		rtn[index2]=tmp;
+		rtn.remove(index1);
+		rtn.add(index1, p2);
+		
+		rtn.remove(index2);
+		rtn.add(index2, p1);
+		
 		return rtn;
 	}
 	
 	//calculate the score of own genome
 	public double getScore(){
-		return initialscore-currentscore;
+		return initialscore-length;
 	}
 	
 	//in some manner, output the result of the simulation
 	public void output(){
 		System.out.println("initial length: "+initialscore);
-		System.out.println("current length: "+currentscore);
+		System.out.println("current length: "+length);
+	}
+	
+	protected double calculateLength(){
+		length = 0;
+		ArrayList<Integer> tmp=(ArrayList<Integer>)genome;
+		for(int i=0; i<coordinates.length; i++){
+			length+=calcLen(coordinates[tmp.get(i)],
+			 coordinates[tmp.get((i+1)%tmp.size())]);
+		}
+		return length;
 	}
 	
 	//returns a new gene
-	public Integer[] newGenome(){
+	public ArrayList<Integer> newGenome(){
 		ArrayList<Integer> remaping=new ArrayList<Integer>();
+		ArrayList<Integer> rtn=new ArrayList<Integer>();
 		
 		for(int i=0; i<coordinates.length; i++){
 			remaping.add(i);
 		}
-		Integer[] rtn=new Integer[coordinates.length];
 		
 		for(int i=0; i<coordinates.length; i++){
-			rtn[i]=remaping.remove((new Random()).nextInt(remaping.size()));
+			rtn.add(remaping.remove((new Random()).nextInt(remaping.size())));
 		}
 		
 		return rtn;
@@ -77,12 +90,7 @@ class TSPLifeform extends LifeForm {
 	
 	//remaps genome to the problem instance
 	public void run(){
-		currentscore=0;
-		//System.out.println(genome);
-		for(int i=0; i<coordinates.length; i++){
-			currentscore+=calcLen(coordinates[genome[i]],
-			 coordinates[genome[(i+1)%genome.length]]);
-		}
+		calculateLength();
 	}
 	
 	private double calcLen(double[] point1, double[] point2){
