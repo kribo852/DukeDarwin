@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class HighEndHabitat extends Habitat{
-		final int saveinterval = 150;
+		final int saveinterval = 15;
 		final int habitatsize=25;
 		Thread[] threads= new Thread[3];
 		final double habitatechancetailcoeficient=0.05;
@@ -35,7 +35,7 @@ public class HighEndHabitat extends Habitat{
 			Lifeform mutator = newInstance(null, lifeformClass);
 			
 			for(int i=0; i<threads.length; i++){
-				gencopystore[i]=mutator.mutate(selectGenome(genomes));
+				gencopystore[i]=mutator.mutate(selectGenome(genomes), selectGenome(genomes));
 				lifeformstore[i] = newInstance(gencopystore[i], lifeformClass);
 				threads[i]=new Thread(lifeformstore[i]);
 				threads[i].start();
