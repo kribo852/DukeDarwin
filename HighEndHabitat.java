@@ -44,9 +44,20 @@ public class HighEndHabitat extends Habitat{
 			for(int i=0; i<threads.length; i++){
 				try{
 					threads[i].join(10000);
-					genomes.put(lifeformstore[i].getScore(), gencopystore[i]);
 				}catch(InterruptedException e){
 					System.out.println(e);
+				}
+			}
+			
+			for(int i=0; i<threads.length; i++){
+				if(!genomes.containsKey(lifeformstore[i].getScore())){
+					genomes.put(lifeformstore[i].getScore(), gencopystore[i]);//bryt ut, lägg resultat mellan 2 andra om samma resultat redan finns
+				}else {
+					Double nextlowerscore = genomes.lowerKey(lifeformstore[i].getScore());
+					if(nextlowerscore != null) {
+						double newscore=(999.0*lifeformstore[i].getScore()+nextlowerscore)/1000.0;
+						genomes.put(newscore, gencopystore[i]);//diffar poängen så att båda organismerna kan sparas
+					}
 				}
 			}
 			
