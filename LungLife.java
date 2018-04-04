@@ -1,167 +1,283 @@
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.HashSet;
 import java.util.HashMap;
+
+
 import java.util.Random;
-import java.util.ArrayList;
-import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
+
+import java.io.IOException;
 import java.io.File;
+
 import javax.imageio.ImageIO;
-import java.awt.Color;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
 import java.awt.Graphics;
 
-final class LungLife extends LifeForm {
+public class LungLife extends Lifeform {
+
+	double score;
+	int dimension = 250;
 	
-	HashSet<Integer> veins;
-	final int startx=1000;
-	final int starty=1000;
-	
-	public LungLife(final Integer[] genome){
+	static JFrame jframe;
+
+	public <T> LungLife(Collection<T> genome) {
 		super(genome);
-		veins=new HashSet<Integer>();
+		score=0;
+	}
+
+	@Override
+	public void run() {
+		ScoreConsumer scoreConsumer = new ScoreConsumer(searchable(genome));
+		genericFloodfill(dimension/2,dimension/2, 1, searchable(genome), scoreConsumer);
+		score = scoreConsumer.calcScore();
 	}
 	
-	public Integer[] mutate(final Integer[] genome1, final Integer[] genome2){
-		return genome1;
+	boolean[][] searchable(Collection tmp) {
+		boolean[][] search = new boolean[dimension][dimension];
+
+		for(int i=0; i<dimension; i++)for(int j=0; j<dimension; j++) {
+			search[i][j] = ((ArrayList<Boolean>)tmp).get(i+j*dimension);
+		}
+		return search;
 	}
-	
-	public Integer[] mutate(final Integer[] genome) {
-		
-		Integer[] rtn=new Integer[genome.length];
-		
-		int rate=5+(new Random()).nextInt(20);
-		rate*=10;
-		
-		for(int i=0; i<rtn.length; i++) {
-			
-			int fallout=(new Random()).nextInt(rate);
-			
-			if(fallout==0){
-				rtn[i]=newGene(i);
-			}else if(fallout==1){
-				rtn[i]=((newGene(i)>>2)<<2)+(genome[i]&3);
-			}else if(fallout==2){
-				
-				int direction=(new Random()).nextBoolean()? 3: 5;
-				
-				for(int j=i; j<rtn.length; j++){
-					int newdir=((direction+(genome[i]&3))%4);
-					rtn[i]=((genome[i]>>2)<<2)+newdir;
-				}
-				
-			}else{
-				rtn[i]=genome[i];
-			}
+
+	@Override
+	public Collection mutate(Collection genome1, Collection genome2) {
+		List<Boolean> rtn = new ArrayList<Boolean>();
+		List<Boolean> tmp1=(List<Boolean>)genome1;
+		List<Boolean> tmp2=(List<Boolean>)genome2;
+
+		for(int i=0; i<genome1.size(); i++) {
+			rtn.add(new Random().nextBoolean() ? tmp1.get(i) : tmp2.get(i));
 		}
 		
+		boolean search[][]= searchable(rtn);
+		
+		rtn = new ArrayList<Boolean>();
+		
+		if(new Random().nextBoolean()){
+			disorderMutate(search);
+		}else{
+			copyMutate(search);
+		}
+		
+		for(int i=0; i<dimension; i++)for(int j=0; j<dimension; j++) {
+			rtn.add(search[i][j]);
+		}
 		return rtn;
 	}
+	
+	public void disorderMutate(boolean search[][]) {
+		int mutationrate=1+(new Random()).nextInt(dimension*dimension);
 		
+		for(int i=0; i<dimension; i++)for(int j=0; j<dimension; j++) {
+			if((new Random()).nextInt(mutationrate) == 0) {
+				search[i][j] = (new Random()).nextBoolean();
+			}
+		}
+	}
+	
+	public void copyMutate(boolean search[][]) {
+		int copysize=5+new Random().nextInt(15);
+		boolean[][] copyArray = new boolean[copysize][copysize];
+		
+		int offsetx=new Random().nextInt(search.length-copysize);
+		int offsety=new Random().nextInt(search[0].length-copysize);
+		
+		for(int i=0; i<copysize; i++) for(int j=0; j<copysize; j++) {
+			copyArray[i][j] = search[i+offsetx][j+offsety];
+		}
+		
+		while(new Random().nextInt(5)!=0) {
+			offsetx = new Random().nextInt(search.length - copysize);
+			offsety = new Random().nextInt(search[0].length - copysize);
+			for(int i=0; i<copysize; i++) for(int j=0; j<copysize; j++) {
+				search[i+offsetx][j+offsety] = copyArray[i][j];
+			}	
+		}
+	}
+
+	@Override
+	public Collection mutate(Collection genome) {
+		return null;
+	}
+
+	@Override
 	public double getScore() {
-		HashSet<Integer> visited=new HashSet<Integer>();
-		ArrayList<Integer> active=new ArrayList<Integer>(); 
-		HashSet<Integer> airused=new HashSet<Integer>(); 
+		return score;
+	}
+
+	@Override
+	public void output() {
+		System.out.println(" "+score);
 		
-		active.add(getIndex(startx,starty));
-		visited.add(getIndex(startx,starty));	
-		while(!active.isEmpty()){
-			int[] position=getPosition(active.remove(0));
+		if(jframe == null) {
+			jframe= new JFrame();
+			jframe.setVisible(true);
+			jframe.setSize(1000, 1000);		
+			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
+		Graphics g=jframe.getGraphics();
+		PaintConsumer paintconsumer = new PaintConsumer(dimension);
+		genericFloodfill(dimension/2,dimension/2, 1, searchable(genome), paintconsumer);
+		
+		paintconsumer.paint(g);	
+	}
+
+	@Override
+	public Collection newGenome() {
+		List<Boolean> coordinategenes = new ArrayList<Boolean>();
+		
+		for(int i=0; i<dimension*dimension; i++){
 			
-			for(int i=-1; i<2; i++)for(int j=-1; j<2; j++){
-				if(!veins.contains(getIndex(position[0]+i, position[1]+j))){
-					airused.add(getIndex(position[0]+i, position[1]+j));
-				}else{
-					if(!visited.contains(getIndex(position[0]+i, position[1]+j))){
-						active.add(getIndex(position[0]+i, position[1]+j));
-						visited.add(getIndex(position[0]+i, position[1]+j));
+			int xpos=i%dimension;
+			int ypos=i/dimension;
+			
+			if((xpos==dimension/2 || ypos==dimension/2) && (Math.abs(xpos-dimension/2)<dimension/5 &&  Math.abs(ypos-dimension/2)<dimension/5)){
+				coordinategenes.add(true);
+			}else{
+				coordinategenes.add(new Random().nextBoolean());
+			}
+		}
+		return coordinategenes;
+	}
+	
+	private void genericFloodfill(int initx, int inity, int distance, boolean[][] search, Consumer<Integer> consumer){
+		TreeSet<Integer> old = new TreeSet<Integer>();
+		HashSet<Integer> all = new HashSet<Integer>();
+
+		old.add(initx+(inity<<16));
+		all.add(initx+(inity<<16));
+		TreeSet<Integer> recent = new TreeSet<Integer>(); 
+		
+		while(!old.isEmpty()){
+		
+			while(!old.isEmpty()){
+				int position=old.pollFirst();
+				int x=position&0xFFFF;
+				int y=position>>16;
+				
+				for(int i=-1; i<2; i++)for(int j=-1; j<2; j++){
+					if(i+x>=0 && i+x<dimension && j+y>=0 && j+y<dimension) {
+						if(Math.abs(i+j) == 1) {
+							int parse=(i+x)+((j+y)<<16);
+							if(search[i+x][j+y] && !all.contains(parse)) {
+								recent.add(parse);
+								consumer.accept(i+x);
+								consumer.accept(j+y);
+								consumer.accept(distance);
+							}
+						}
+					}
+				}	
+			}
+			distance++;
+			old.addAll(recent);
+			all.addAll(recent);
+			recent = new TreeSet<Integer>(); 
+		}			
+	}
+}
+
+class PaintConsumer implements Consumer<Integer> {
+	int x=-1;
+	int y=-1;
+	int dimension;
+	int colormultiplier=357;
+	int colornounce=127;
+	HashMap<Integer, Integer> distances = new HashMap<Integer, Integer>();
+	HashMap<Integer, Integer> colours = new HashMap<Integer, Integer>();
+	
+	public PaintConsumer(int dimension) {
+		this.dimension = dimension;
+		
+		int c=colornounce;
+		for(int i=0; i<dimension; i++) {
+			colours.put(i, c);
+			c=c*colormultiplier+colornounce;
+		}
+	}
+	
+	
+	@Override
+	public void accept(Integer i){
+		if(x == -1){
+			x = i;
+		}
+		else if(y == -1){
+			y = i;
+		}
+		else {
+			distances.put(x+dimension*y, i);
+			x = -1;
+			y = -1;			
+		}
+	}
+	
+	public void paint(Graphics g) {
+		for(int i=0; i<dimension; i++)for(int j=0; j<dimension; j++) {
+			if(distances.containsKey(i+j*dimension)) {
+				Integer colourvalue=colours.get(distances.get(i+j*dimension));
+				if(colourvalue == null ){
+					colourvalue = new Random().nextInt();
+				}
+				
+				g.setColor(new Color(colourvalue&0x00FFFFFF));
+			} else {
+				g.setColor(Color.black);
+			}
+			g.fillRect(i*2+100, j*2+100, 2, 2);
+		}
+	}
+	
+	
+}
+
+class ScoreConsumer implements Consumer<Integer>{
+	int x=-1;
+	int y=-1;
+
+	final boolean[][] searchable;
+	HashMap<Integer, Integer> coveredoxygene = new HashMap<Integer, Integer>();
+	
+	public ScoreConsumer(boolean[][] searchable) {
+		this.searchable=searchable;	
+	}
+	
+	@Override
+	public void accept(Integer integer){
+		if(x == -1){
+			x = integer;
+		}
+		else if(y == -1){
+			y = integer;
+		}
+		else {
+			for(int i = -1; i< 2; i++)for(int j = -1; j< 2; j++) {
+				if(Math.abs(i+j) == 1 && i+x>=0 && i+x<searchable.length && j+y>=0 && j+y<searchable.length) {
+					if(!searchable[i+x][j+y] && !coveredoxygene.containsKey(x+i+(y+j)*searchable.length)){
+						coveredoxygene.put(x+i+(y+j)*searchable.length, integer);
 					}
 				}
 			}
-		}
-		return airused.size();
-	}
-	
-	public void output(){
-		int minx=Integer.MAX_VALUE, miny=Integer.MAX_VALUE, maxx=Integer.MIN_VALUE, maxy=Integer.MIN_VALUE;
-		System.out.println("veins size: "+veins.size()+" score: "+getScore());
-		for(Integer i: veins){
-			int[] position=getPosition(i);
-			if(position[0]<minx)minx=position[0];
-			if(position[1]<miny)miny=position[1];
-			if(position[0]>maxx)maxx=position[0];
-			if(position[1]>maxy)maxy=position[1];
-		}
-		
-		BufferedImage image=new BufferedImage(4*(maxx-minx+1), 4*(maxy-miny+1), 1);
-		Graphics g=image.getGraphics();
-		g.setColor(new Color(0,100,255));
-		for(Integer i: veins){
-			int[] position=getPosition(i);
-			g.fillRect(4*(position[0]-minx), 4*(position[1]-miny),4,4);
-		}
-		
-		try{
-			ImageIO.write(image, "png" , new File("sav"+(getScore())+".png"));
-		}catch(Exception e){
-			System.out.println(e);
+			x = -1;
+			y = -1;			
 		}
 	}
 	
-	public Integer [] newGenome(){
-		Integer[] genome=new Integer[15000];
-		for(int i=0; i<genome.length; i++){
-			genome[i]=newGene(i);
-		} 
-		return genome;
-	}
-	
-	private Integer newGene(int previousindexes){
-		return (((new Random()).nextInt(previousindexes+1))<<2)+(new Random()).nextInt(4);//
-	}
-	
-	public void run(){
-		run(startx,starty);
-	}
-	
-	private void run(int x, int y){
-		insertVein(x,y);
-		HashMap<Integer,int[]> previous=new HashMap<Integer,int[]>();
-		previous.put(0, new int[]{x,y});
-		
-		for(int i=0; i<genome.length; i++){
-			int previd=genome[i]>>2;
-			int dir=genome[i]&3;
-			int[] prevpos=previous.get(previd);
-			
-			//if(prevpos==null)continue;
-			//System.out.println("direction "+dir);
-			
-			if(dir==0){
-				previous.put(i+1, new int[]{prevpos[0]+1,prevpos[1]});
-				insertVein(prevpos[0]+1,prevpos[1]);
-			}
-			if(dir==1){
-				previous.put(i+1, new int[]{prevpos[0],prevpos[1]+1});
-				insertVein(prevpos[0],prevpos[1]+1);
-			}
-			if(dir==2){
-				previous.put(i+1, new int[]{prevpos[0]-1,prevpos[1]});
-				insertVein(prevpos[0]-1,prevpos[1]);
-			}
-			if(dir==3){
-				previous.put(i+1, new int[]{prevpos[0],prevpos[1]-1});
-				insertVein(prevpos[0],prevpos[1]-1);
-			}
+	public double calcScore() {
+		double rtn=0;
+		for(Integer value: coveredoxygene.values()){
+			double distance=value;
+			rtn+=1.0/distance;
 		}
-	}
-	
-	private void insertVein(int x, int y){
-		veins.add(getIndex(x,y));
-	}
-	
-	private Integer getIndex(int x, int y){
-		return ((y<<16)+x);
-	}
-	
-	private int[] getPosition(Integer i){
-		return new int[]{i&0x0000FFFF , i>>16};
+		return rtn;
 	}
 }
