@@ -1,19 +1,19 @@
 
 
 This project is used to run genetic algorithms.
-This project is free to use.
+This project is free to use. See the MIT License: https://en.wikipedia.org/wiki/MIT_License
 
 Main class: runs application, includes Habitat abstract class, which contains the lifeforms.
 
 Habitat, a place to run evolution of lifeforms
 
-Lifeform: interface of a lifeform, with a genome of a collection of type T. Has methods for running an evaluation, mutation, and output of results.
+Lifeform: interface of a lifeform, with a genome of a collection of type T. Has methods for running an evaluation of the lifeform, mutation, output of results and making of a new genome.
 
 HighEndHabitat: Habitat that has the following features:
 
 	-Sexual reproduction.
 	
-	-A method of evolution that is "generationless" 2 lifeforms in the habitat are chosen from an array, with higher probabilities for lifeforms with higher fitness.
+	-A method of evolution that is "generationless" 2 lifeforms in the habitat are chosen from an array, with higher probabilities for lifeforms with higher fitness/score.
 	 The child of the 2 lifeforms is run and evaluated, and then placed in the habitat. the habitat size is limited and the worst performing lifeforms are thrown away.
 	 
 	-Runs the evaluation on 3 threads simultaniously
