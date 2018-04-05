@@ -3,9 +3,9 @@
 This project is used to run genetic algorithms.
 This project is free to use. See the MIT License: https://en.wikipedia.org/wiki/MIT_License
 
-Main class: runs application, includes Habitat abstract class, which contains the lifeforms.
+Main: runs application, includes Habitat abstract class, which contains the lifeforms. Main contains a class loader that currently is used to load a/the lifeform.
 
-Habitat, a place to run evolution of lifeforms
+Habitat: a place to run evolution of lifeforms
 
 Lifeform: interface of a lifeform, with a genome of a collection of type T. Has methods for running an evaluation of the lifeform, mutation, output of results and making of a new genome.
 
@@ -19,9 +19,7 @@ HighEndHabitat: Habitat that has the following features:
 	-Runs the evaluation on 3 threads simultaniously
 	 
 
-
-
-
+--------------------------------------------------------------
 
 Some examples of lifeforms:
 
@@ -34,5 +32,23 @@ OptimalCylinderLife: calculates the optimal ratio between height and width of a 
 LungLife: makes a lunglike organic structure by maximizing area covered by air.
 
 
+--------------------------------------------------------------
 
+To run project as is:
 
+Compile main
+	-javac Main.java
+	
+Compile habitat (for example)
+
+	-javac HighEndHabitat.java
+	
+Compile lifeform (for example)
+
+	-javac LungLife.java  
+	
+Run
+
+	-java Main LungLife
+
+	
