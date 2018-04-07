@@ -1,22 +1,14 @@
-import java.util.HashSet;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.util.Collection;
 
 
 final class BallWeight extends Lifeform {
 	
-	double score;
+	double score=0;
 	
 	public BallWeight(final Collection genome){
 		super(genome);
-		score=0;
 	}
 	
 	public ArrayList<Integer> mutate(final Collection g1, Collection g2){
@@ -40,19 +32,15 @@ final class BallWeight extends Lifeform {
 	public ArrayList<Integer> mutate(final Collection g) {
 		ArrayList<Integer> genome = (ArrayList<Integer>)g;
 		
-		int place=(new Random()).nextInt(genome.size());//change this position
-		
-		if(place < 8) return genome;		
-		
-		if(place<7*8) {
-			HashSet<Integer> freeballs=new HashSet<Integer>();
+		int place=8 + (new Random()).nextInt(genome.size() - 8);//change this position, first 8 positions are always 1,2,3,4  5,6,7,8
+				
+		if(place < 7*8) {
+			ArrayList<Integer> freeballs=new ArrayList<Integer>();
 			for(int i=0; i<12; i++)freeballs.add(i);
 			for(int i=0; i<8; i++) {
 				freeballs.remove(genome.get((place-place%8)+i));//calculate free balls that can be used
             }
-			ArrayList<Integer> freeballlist=new ArrayList<Integer>();
-			freeballlist.addAll(freeballs);
-			genome.set(place,freeballlist.remove((new Random()).nextInt(freeballlist.size())));//
+			genome.set(place,freeballs.remove((new Random()).nextInt(freeballs.size())));//
        }else {
                genome.set(place, (new Random()).nextInt(12));
        }
@@ -61,11 +49,11 @@ final class BallWeight extends Lifeform {
 	}
 		
 	public double getScore() {
-		return score;
+		return score*(25/6.0);//into percent
 	}
 	
 	public void output(){
-		System.out.println("score: "+score*(25/6.0)+"%");
+		System.out.println("score: "+getScore()+"%");
 		for(int i=0; i<8*7; i++){
 			if(i%4==0){
 				if(i%8!=0)System.out.print("   ");
@@ -82,7 +70,7 @@ final class BallWeight extends Lifeform {
 		BallWeight baseline=new BallWeight(newGenome());
 		baseline.run();
 		
-		System.out.println("\nbaseline: "+ baseline.score*(25/6.0)+"%"); //score of unevolved lifeform
+		System.out.println("\nbaseline: "+ baseline.getScore()+"%"); //score of unevolved lifeform
 		
 	}
 	
