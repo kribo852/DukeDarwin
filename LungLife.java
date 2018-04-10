@@ -20,14 +20,14 @@ import javax.swing.JFrame;
 
 import java.awt.Graphics;
 
-public class LungLife extends Lifeform {
+public class LungLife extends Lifeform<Boolean, ArrayList<Boolean>> {
 
 	double score;
-	int dimension = 250;
+	int dimension = 320;
 	
 	static JFrame jframe;
 
-	public <T> LungLife(Collection<T> genome) {
+	public LungLife(ArrayList<Boolean> genome) {
 		super(genome);
 		score=0;
 	}
@@ -39,23 +39,21 @@ public class LungLife extends Lifeform {
 		score = scoreConsumer.calcScore();
 	}
 	
-	boolean[][] searchable(Collection tmp) {
+	boolean[][] searchable(ArrayList<Boolean> tmp) {
 		boolean[][] search = new boolean[dimension][dimension];
 
 		for(int i=0; i<dimension; i++)for(int j=0; j<dimension; j++) {
-			search[i][j] = ((ArrayList<Boolean>)tmp).get(i+j*dimension);
+			search[i][j] = tmp.get(i+j*dimension);
 		}
 		return search;
 	}
 
 	@Override
-	public Collection mutate(Collection genome1, Collection genome2) {
-		List<Boolean> rtn = new ArrayList<Boolean>();
-		List<Boolean> tmp1=(List<Boolean>)genome1;
-		List<Boolean> tmp2=(List<Boolean>)genome2;
+	public ArrayList<Boolean> mutate(ArrayList<Boolean> genome1, ArrayList<Boolean> genome2) {
+		ArrayList<Boolean> rtn = new ArrayList<Boolean>();
 
 		for(int i=0; i<genome1.size(); i++) {
-			rtn.add(new Random().nextBoolean() ? tmp1.get(i) : tmp2.get(i));
+			rtn.add(new Random().nextBoolean() ? genome1.get(i) : genome2.get(i));
 		}
 		
 		boolean search[][]= searchable(rtn);
@@ -105,7 +103,7 @@ public class LungLife extends Lifeform {
 	}
 
 	@Override
-	public Collection mutate(Collection genome) {
+	public ArrayList<Boolean> mutate(ArrayList<Boolean> genome) {
 		return null;
 	}
 
@@ -132,8 +130,8 @@ public class LungLife extends Lifeform {
 	}
 
 	@Override
-	public Collection newGenome() {
-		List<Boolean> coordinategenes = new ArrayList<Boolean>();
+	public ArrayList<Boolean> newGenome() {
+		ArrayList<Boolean> coordinategenes = new ArrayList<Boolean>();
 		
 		for(int i=0; i<dimension*dimension; i++){
 			

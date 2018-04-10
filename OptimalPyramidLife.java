@@ -3,27 +3,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-class OptimalPyramidLife extends Lifeform{
+class OptimalPyramidLife extends Lifeform<Double, ArrayList<Double>>{
 	Random RND=new Random();
 	
-	public OptimalPyramidLife(final Collection genome){
+	public OptimalPyramidLife(final ArrayList<Double> genome){
 		super(genome);
 	}
 	
 	//sexual reproduction
-	public ArrayList<Integer> mutate(final Collection genome1, final Collection genome2){
-		return null;
+	public ArrayList<Double> mutate(final ArrayList<Double> genome1, final ArrayList<Double> genome2){
+		return mutate(genome1);
 	}
 	
 	//asexual reproduction
-	public ArrayList<Double> mutate(final Collection genome){
+	public ArrayList<Double> mutate(final ArrayList<Double> genome){
 		ArrayList<Double> rtn=new ArrayList<>();
 		double magnifier1=0.95+0.1*RND.nextDouble();
 		double magnifier2=0.95+0.1*RND.nextDouble();
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
 		
-		rtn.add(tmp.get(0)*magnifier1);
-		rtn.add(tmp.get(1)*magnifier2);
+		rtn.add(genome.get(0)*magnifier1);
+		rtn.add(genome.get(1)*magnifier2);
 		return rtn;
 	}
 	
@@ -37,31 +36,25 @@ class OptimalPyramidLife extends Lifeform{
 		//genome[0] height
 		//genome[1] width
 		
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
+		double volume=(genome.get(1)*genome.get(1)*genome.get(0))/3.0;
 		
-		double volume=(tmp.get(1)*tmp.get(1)*tmp.get(0))/3.0;
-		
-		if(volume>0 && tmp.get(0)>=0 && tmp.get(1)>=0 && area()<100.0) {
+		if(volume>0 && genome.get(0)>=0 && genome.get(1)>=0 && area()<100.0) {
 			return volume;
 		}
 		
 		return 0;
 	}
 	
-	private double area(){
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
-		
-		double hprime=Math.hypot(tmp.get(0), tmp.get(1)/2.0);
-		return (tmp.get(1)*tmp.get(1))+2.0*hprime*tmp.get(1);
+	private double area(){		
+		double hprime=Math.hypot(genome.get(0), genome.get(1)/2.0);
+		return (genome.get(1)*genome.get(1))+2.0*hprime*genome.get(1);
 	}
 	
 	//in some manner, output the result of the simulation
 	public void output() {
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
-		
-		System.out.println("height: "+tmp.get(0));
-		System.out.println("width: "+tmp.get(1));
-		System.out.println("ratio: "+(tmp.get(0)/tmp.get(1)));
+		System.out.println("height: "+genome.get(0));
+		System.out.println("width: "+genome.get(1));
+		System.out.println("ratio: "+(genome.get(0)/genome.get(1)));
 
 		System.out.println("area: "+area());
 		System.out.println("score: "+getScore());
