@@ -21,7 +21,11 @@ public class HighEndHabitat extends Habitat{
 			lifeform.run();
 			genomes.put(lifeform.getScore(), c);
 		}
+		
+		testDistribution();
 	}
+	
+	
 	
 	public void run(Class lifeformClass){
 		
@@ -51,12 +55,12 @@ public class HighEndHabitat extends Habitat{
 			
 			for(int i=0; i<threads.length; i++){
 				if(!genomes.containsKey(lifeformstore[i].getScore())){
-					genomes.put(lifeformstore[i].getScore(), gencopystore[i]);//bryt ut, lägg resultat mellan 2 andra om samma resultat redan finns
+					genomes.put(lifeformstore[i].getScore(), gencopystore[i]);
 				}else {
 					Double nextlowerscore = genomes.lowerKey(lifeformstore[i].getScore());
 					if(nextlowerscore != null) {
-						double newscore=(999.0*lifeformstore[i].getScore()+nextlowerscore)/1000.0;
-						genomes.put(newscore, gencopystore[i]);//diffar poängen så att båda organismerna kan sparas
+						double newscore=(lifeformstore[i].getScore()+nextlowerscore)/2;
+						genomes.put(newscore, gencopystore[i]);//trick to save an organism with an already existing score in the treemap, put it between 2 other scores.
 					}
 				}
 			}
@@ -75,7 +79,30 @@ public class HighEndHabitat extends Habitat{
 		}
 	}
 	
-	
+	void testDistribution(){
+		int[] distribution = new int[habitatsize];
+		
+		for(int i=0; i<1000; i++){
+			
+			for(int j=0; ; j++){
+				if(j>=habitatsize){
+					distribution[0]++;
+					break;
+				}
+				
+				if((new Random()).nextDouble()<calculateChance()){
+					distribution[j]++;
+					break;
+				}	
+			}
+			
+		}
+		
+		System.out.println("distribution");
+		for(int i : distribution) {
+			System.out.print(" "+i+" |" );
+		}
+	}
 	
 	Collection selectGenome(TreeMap<Double, Collection> genomes){
 		Map<Double, Collection> tmp=genomes.descendingMap();
@@ -87,9 +114,12 @@ public class HighEndHabitat extends Habitat{
 		return genomes.lastEntry().getValue();
 	}
 	
+	//derived from equation e^(-a*Hsize)=Tsize. Tsize=habitatechancetailcoeficient, Hsize=habitatsize.
+	//restprobability, the wanted probability, is supposed to be e^(-a).
+	//corrected 1/5/2018
 	double calculateChance(){
-		double c = 1.0/(Math.exp(Math.log(habitatechancetailcoeficient)/habitatsize));
-		return 1.0-c;
+		double restprobability = (Math.exp(Math.log(habitatechancetailcoeficient)/habitatsize));
+		return 1.0-restprobability;
 	}
 	
 }
