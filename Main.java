@@ -9,12 +9,8 @@ import java.util.Map.Entry;
 
 class Main{
 
-	public static void main(String[] args){
-		
-		//SpeciesContainer species=new SpeciesContainer(loadClass(args[0]), args[1]);
-		
-		//species.evolve();
-		
+	public static void main(String[] args) {
+				
 		Habitat h =new HighEndHabitat();
 		
 		h.run(loadClass(args[0]));
