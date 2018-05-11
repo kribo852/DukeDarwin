@@ -2,20 +2,20 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class OptimalCylinderLife extends Lifeform{
+class OptimalCylinderLife extends Lifeform<Double, ArrayList<Double>>{
 	Random RND=new Random();
 	
-	public OptimalCylinderLife(final Collection genome){
+	public OptimalCylinderLife(final ArrayList<Double> genome){
 		super(genome);
 	}
 	
 	//sexual reproduction
-	public ArrayList<Integer> mutate(final Collection genome1, final Collection genome2){
-		return null;
+	public ArrayList<Double> mutate(final ArrayList<Double> genome1, final ArrayList<Double> genome2){
+		return mutate(genome1);
 	}
 	
 	//asexual reproduction
-	public ArrayList<Double> mutate(final Collection genome){
+	public ArrayList<Double> mutate(final ArrayList<Double> genome){
 		ArrayList<Double> rtn=new ArrayList<>();
 		double magnifier1=0.95+0.1*RND.nextDouble();
 		double magnifier2=0.95+0.1*RND.nextDouble();
@@ -31,32 +31,26 @@ class OptimalCylinderLife extends Lifeform{
 	}
 	
 	//calculate the score of own genome
-	public double getScore() {
+	public double getScore() {		
+		double volume=(Math.PI*(double)genome.get(0)*genome.get(0)*genome.get(1));
 		
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
-		
-		double volume=(Math.PI*(double)tmp.get(0)*tmp.get(0)*tmp.get(1));
-		
-		if(area()>0 && volume>0 && tmp.get(0)>=0 && tmp.get(1)>=0 && area()<100.0) {
+		if(area()>0 && volume>0 && genome.get(0)>=0 && genome.get(1)>=0 && area()<100.0) {
 			return volume;
 		}
-		
 		return 0;
 	}
 	
 	private double area(){
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
 		//2 lids + wall of can
-		return (Math.PI*2.0*tmp.get(0)*tmp.get(0))+(Math.PI*2.0*tmp.get(0)*tmp.get(1));
+		return (Math.PI*2.0*genome.get(0)*genome.get(0))+(Math.PI*2.0*genome.get(0)*genome.get(1));
 	}
 	
 	//in some manner, output the result of the simulation
 	public void output() {
-		ArrayList<Double> tmp= (ArrayList<Double>)genome;
 		
-		System.out.println("radius: "+tmp.get(0));
-		System.out.println("height: "+tmp.get(1));
-		System.out.println("ratio: "+tmp.get(0)/tmp.get(1));
+		System.out.println("radius: "+genome.get(0));
+		System.out.println("height: "+genome.get(1));
+		System.out.println("ratio: "+genome.get(0)/genome.get(1));
 		System.out.println("area: "+area());
 		System.out.println("score: "+getScore());
 	}
