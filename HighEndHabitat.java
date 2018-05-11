@@ -9,7 +9,7 @@ public class HighEndHabitat extends Habitat{
 		final int saveinterval = 15;
 		final int habitatsize=25;
 		Thread[] threads= new Thread[3];
-		final double habitatechancetailcoeficient=0.05;
+		final double habitatechancetailcoeficient=0.04;
 		
 		
 	public void genesis(Class lifeformClass){
@@ -83,21 +83,13 @@ public class HighEndHabitat extends Habitat{
 		int[] distribution = new int[habitatsize];
 		
 		for(int i=0; i<1000; i++){
-			
 			for(int j=0; ; j++){
-				if(j>=habitatsize){
-					distribution[0]++;
-					break;
-				}
-				
 				if((new Random()).nextDouble()<calculateChance()){
-					distribution[j]++;
+					distribution[j%habitatsize]++;
 					break;
 				}	
-			}
-			
+			}		
 		}
-		
 		System.out.println("distribution");
 		for(int i : distribution) {
 			System.out.print(" "+i+" |" );
@@ -106,12 +98,13 @@ public class HighEndHabitat extends Habitat{
 	
 	Collection selectGenome(TreeMap<Double, Collection> genomes){
 		Map<Double, Collection> tmp=genomes.descendingMap();
-		for(Entry<Double, Collection> entry: tmp.entrySet()) {
-			if((new Random()).nextDouble()<calculateChance()){
-				return entry.getValue();
+		while(true) {
+			for(Entry<Double, Collection> entry: tmp.entrySet()) {
+				if((new Random()).nextDouble()<calculateChance()){
+					return entry.getValue();
+				}
 			}
 		}
-		return genomes.lastEntry().getValue();
 	}
 	
 	//derived from equation e^(-a*Hsize)=Tsize. Tsize=habitatechancetailcoeficient, Hsize=habitatsize.
