@@ -67,7 +67,7 @@ public class LungLife extends Lifeform<Boolean, ArrayList<Boolean>> {
 		}
 		
 		for(int i=0; i<dimension; i++)for(int j=0; j<dimension; j++) {
-			rtn.add(search[i][j]);
+			rtn.add(search[j][i]);//keep direction of the matrix
 		}
 		return rtn;
 	}
@@ -93,7 +93,9 @@ public class LungLife extends Lifeform<Boolean, ArrayList<Boolean>> {
 			copyArray[i][j] = search[i+offsetx][j+offsety];
 		}
 		
-		while(new Random().nextInt(5)!=0) {
+		int copytimes = new Random().nextInt(25);
+		
+		while(copytimes-- != 0) {
 			offsetx = new Random().nextInt(search.length - copysize);
 			offsety = new Random().nextInt(search[0].length - copysize);
 			for(int i=0; i<copysize; i++) for(int j=0; j<copysize; j++) {
