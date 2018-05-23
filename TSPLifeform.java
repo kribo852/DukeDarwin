@@ -29,7 +29,7 @@ class TSPLifeform extends Lifeform {
 	
 	//sexual reproduction
 	public ArrayList<Integer> mutate(final Collection genome1, final Collection genome2){
-		return null;
+		return mutate(genome1);
 	}
 	
 	//asexual reproduction
