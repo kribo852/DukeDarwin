@@ -53,25 +53,27 @@ class TextClassifierLifeform extends Lifeform<StringScore, ArrayList<StringScore
 			rtn.add(stringscorecopy);
 		}
 		
-		StringScore stringscore = rtn.get((new Random()).nextInt(genome1.size()));
-		StringScore replace = newGene();
+		for(int i=0; i<3; i++) {
+			StringScore stringscore = rtn.get((new Random()).nextInt(genome1.size()));
+			StringScore replace = newGene();
 		
-		int mutateoption = (new Random()).nextInt(4); 
+			int mutateoption = (new Random()).nextInt(4); 
 		
-		if(mutateoption == 0) {
-			stringscore.string = mutateString(stringscore.string);
-		}
+			/*if(mutateoption == 0) {
+				stringscore.string = mutateString(stringscore.string);
+			}*/
 		
-		if(mutateoption == 1) {
-			stringscore.string = replace.string;
-		}
+			if(mutateoption == 1) {
+				stringscore.string = replace.string;
+			}
 		
-		if(mutateoption == 2) {
-			stringscore.score1 = replace.score1;
-		}
+			if(mutateoption == 2) {
+				stringscore.score1 = replace.score1;
+			}
 		
-		if(mutateoption == 3) {
-			stringscore.score2= replace.score2;
+			if(mutateoption == 3) {
+				stringscore.score2= replace.score2;
+			}
 		}
 		
 		return rtn;
@@ -138,7 +140,7 @@ class TextClassifierLifeform extends Lifeform<StringScore, ArrayList<StringScore
 	public final ArrayList<StringScore> newGenome() {
 		ArrayList<StringScore> rtn = new ArrayList<>();
 		
-		for(int i=0; i<150; i++){
+		for(int i=0; i<500; i++){
 			rtn.add(newGene());
 		}
 		return rtn;
@@ -147,7 +149,7 @@ class TextClassifierLifeform extends Lifeform<StringScore, ArrayList<StringScore
 	StringScore newGene() {
 		StringScore s= new StringScore();	
 		s.string="";
-		for(int len=0; len<5 && (new Random()).nextBoolean(); len++){
+		for(int len=0; len<3 && (new Random()).nextBoolean(); len++){
 			s.string = s.string+(char)((new Random()).nextInt(0x7F));
 		}
 		s.score1 = (new Random()).nextDouble();
@@ -161,7 +163,9 @@ class TextClassifierLifeform extends Lifeform<StringScore, ArrayList<StringScore
 				return s.substring(1);
 			}
 		} else {
-			return s + (char)((new Random()).nextInt(0x7F));
+			if(s.length()<2) {
+				return s + (char)((new Random()).nextInt(0x7F));
+			}
 		}
 		return s;
 	}
