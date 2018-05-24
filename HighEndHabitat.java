@@ -11,6 +11,8 @@ public class HighEndHabitat extends Habitat{
 		Thread[] threads= new Thread[3];
 		final double habitatechancetailcoeficient=0.04;
 		
+		TreeMap<Double, Collection> genomes;
+		
 		
 	public void genesis(Class lifeformClass){
 		genomes = new TreeMap<Double, Collection> ();
@@ -27,7 +29,7 @@ public class HighEndHabitat extends Habitat{
 	
 	
 	
-	public void run(Class lifeformClass){
+	public void start(Class lifeformClass){
 		
 		genesis(lifeformClass);
 		

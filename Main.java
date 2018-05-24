@@ -5,37 +5,33 @@ import java.util.Random;
 import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Map.Entry;
-
+import java.util.ArrayList; 
 
 class Main{
 
 	public static void main(String[] args) {
-				
-		Habitat h =new HighEndHabitat();
+						
+		Class c = loadClass(args[0]);
 		
-		h.run(loadClass(args[0]));
+		Lifeform l = newInstance(c);
+		
+		l.start();
 		
 	}
 	
-	public static Class loadClass(String s) {
+	protected static Class loadClass(String s) {
 		try{
 		  return Class.forName(s); 
 		}catch(Exception e){
 			
 		}
 		return null;
-	}	
-}
-
-abstract class Habitat{
-	TreeMap<Double, Collection> genomes;
+	}
 	
-	protected abstract void run(Class lifeformClass);
-	
-	protected Lifeform newInstance(Collection genome, Class lifeformClass){
+	protected static Lifeform newInstance(Class lifeformClass){
 		try {
 			Constructor ct = lifeformClass.getConstructors()[0];//lifeform has only one constructor
-			Object[] argslist=new Object[]{genome};
+			Object[] argslist=new Object[]{new ArrayList<>()};
 			return(Lifeform)ct.newInstance(argslist);
 		}catch(Exception e){
 			System.out.println("error "+e);
@@ -44,5 +40,5 @@ abstract class Habitat{
 		}
 		return null;
 	}
-	
+		
 }

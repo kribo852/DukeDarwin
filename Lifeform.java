@@ -4,7 +4,7 @@ import java.util.Collection;
 abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
 	
 	T genome;
-	
+		
 	//sets the genome 
 	public Lifeform(final T genome){
 		this.genome=genome;
@@ -23,4 +23,9 @@ abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
 	public abstract void output();
 	
 	public abstract T newGenome();//returns a new genome
+	
+	public void start() {
+		new RobustHabitat().start(this.getClass());	
+	}
+	
 }

@@ -7,7 +7,6 @@ import java.util.TreeSet;
 import java.util.HashSet;
 import java.util.HashMap;
 
-
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -30,6 +29,10 @@ public class LungLife extends Lifeform<Boolean, ArrayList<Boolean>> {
 	public LungLife(ArrayList<Boolean> genome) {
 		super(genome);
 		score=0;
+	}
+	
+	public void start() {
+		new HighEndHabitat().start(this.getClass());	
 	}
 
 	@Override
