@@ -18,8 +18,8 @@ class OptimalPyramidLife extends Lifeform<Double, ArrayList<Double>>{
 	//asexual reproduction
 	public ArrayList<Double> mutate(final ArrayList<Double> genome){
 		ArrayList<Double> rtn=new ArrayList<>();
-		double magnifier1=0.95+0.1*RND.nextDouble();
-		double magnifier2=0.95+0.1*RND.nextDouble();
+		double magnifier1=0.9995+0.001*RND.nextDouble();
+		double magnifier2=0.9995+0.001*RND.nextDouble();
 		
 		rtn.add(genome.get(0)*magnifier1);
 		rtn.add(genome.get(1)*magnifier2);
@@ -32,22 +32,23 @@ class OptimalPyramidLife extends Lifeform<Double, ArrayList<Double>>{
 	
 	//calculate the score of own genome
 	public double getScore() {
-		
 		//genome[0] height
 		//genome[1] width
 		
-		double volume=(genome.get(1)*genome.get(1)*genome.get(0))/3.0;
-		
-		if(volume>0 && genome.get(0)>=0 && genome.get(1)>=0 && area()<100.0) {
+		if(genome.get(0)>=0 && genome.get(1)>=0 && area()<100.0) {
+			double volume=(genome.get(1)*genome.get(1)*genome.get(0))/3.0;
 			return volume;
 		}
 		
 		return 0;
 	}
 	
+	//base area genome.get(1)²
+	//four times side area 4*(hprime*genome.get(1)/2)
 	private double area(){		
 		double hprime=Math.hypot(genome.get(0), genome.get(1)/2.0);
-		return (genome.get(1)*genome.get(1))+2.0*hprime*genome.get(1);
+		
+		return (genome.get(1)+2.0*hprime)*genome.get(1);		
 	}
 	
 	//in some manner, output the result of the simulation
