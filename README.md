@@ -45,22 +45,30 @@ OptimalCylinderLife: calculates the optimal ratio between height and width of a 
 
 LungLife: makes a lunglike organic structure by maximizing area covered by "air".
 
+VindtunnelLife:
+
+BallWeight:
+
+KotlinLife:
+
+TextClassifierLifeform:
+
 --------------------------------------------------------------
 To run project as is:
 
 **Compile main**
-	-javac Main.java
+	$javac Main.java
 	
 **Compile habitat** (either RobustHabitat or HighEndHabitat depending on Lifeform specification (or own implementation).)
 
-	-javac HighEndHabitat.java
+	$javac HighEndHabitat.java
 	
 **Compile lifeform** (for example)
 
-	-javac LungLife.java  
+	$javac LungLife.java  
 	
 **Run**
 
-	-java Main LungLife
+	$java Main LungLife
 
 	
