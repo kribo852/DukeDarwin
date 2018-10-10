@@ -7,7 +7,7 @@ abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
 		
 	//sets the genome 
 	public Lifeform(final T genome){
-		this.genome=genome;
+		this.genome = genome;
 	}
 	
 	//sexual reproduction
