@@ -32,4 +32,4 @@ Or similarly for a Kotlin project:
 	$kotlin StarterKt KotlinLife
 
 ----------------------------------------------
-For more information, pleas see the wiki pages.
+For more information, please see the wiki pages.
