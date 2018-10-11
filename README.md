@@ -20,5 +20,15 @@ To run project as is:
 **Run**
 
 	$java Main LungLife
+	
+Or similarly for a Kotlin project:
+
+**compile**
+
+	$kotlinc Starter.kt Main.java Lifeform.java Habitat.java KotlinLife.kt
+
+**Run**
+
+	$kotlin StarterKt KotlinLife
 
 	
