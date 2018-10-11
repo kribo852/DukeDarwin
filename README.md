@@ -31,4 +31,5 @@ Or similarly for a Kotlin project:
 
 	$kotlin StarterKt KotlinLife
 
-	
+----------------------------------------------
+For more information, pleas see the wiki pages.
