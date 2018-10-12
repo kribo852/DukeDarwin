@@ -9,7 +9,7 @@ To run project as is:
 **Compile main**
 	$javac Main.java
 	
-**Compile habitat** (either RobustHabitat or HighEndHabitat depending on Lifeform specification (or own implementation).)
+**Compile habitat** (either RobustHabitat or HighEndHabitat depending on Lifeform specification (or own implementation)).
 
 	$javac HighEndHabitat.java
 	
