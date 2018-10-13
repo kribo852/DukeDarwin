@@ -18,7 +18,7 @@ private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList
 	}
 
 	override public fun run(): Unit{
-		sumdistance = 0.0
+		sumdistance = 1.0
 
 		for(colour1 in genome) {
 			var minimum = Double.MAX_VALUE
@@ -28,7 +28,7 @@ private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList
 					minimum = euclidicColorDistance(colour1, colour2)
 				}
 			}
-			sumdistance += Math.log(0.1 + minimum)
+			sumdistance *= Math.pow(minimum, 1/32.0)
 		}
 	}
 
@@ -59,11 +59,15 @@ private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList
 	
 	override public fun newGenome(): ArrayList<Color>{
 		var rtn = ArrayList<Color>()
-		for(i in 1..32) rtn.add(Color(Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)))
+		for(i in 0..1)for(j in 0..1)for(k in 0..1) rtn.add(Color(i*255, j*255, k*255))
+
+		for(i in 1..numberofcolours-8) rtn.add(Color(Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)))
 		genome = rtn
 		run();
 		println("log(10): ${Math.log(10.0)}")
 		println("Baseline: ${sumdistance}")
+		println("Number of nodes: ${rtn.size}")
+		println("sqrt(64²+64²+64²): ${Math.sqrt(64.0*64.0+64.0*64.0+64.0*64.0)}")
 		return rtn;
 	}
 
@@ -73,7 +77,11 @@ private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList
 	}
 
 	private fun mutateColour(colour: Color) : Color {
-		if(Random().nextInt(numberofcolours) == 0) {
+		if(Random().nextInt(numberofcolours/2)!=0){
+			return Color(colour.getRed(), colour.getGreen(), colour.getBlue())
+		}
+
+		if(Random().nextBoolean()) {
 			var red = colour.getRed() + Random().nextInt(2) - Random().nextInt(2);
 			var green = colour.getGreen() + Random().nextInt(2) - Random().nextInt(2);
 			var blue = colour.getBlue() + Random().nextInt(2) - Random().nextInt(2);
@@ -83,7 +91,7 @@ private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList
 			blue = Math.min(255, Math.max(0, blue));
 
 			return Color(red, green, blue)
-		}else {
+		} else {
 			return Color(Random().nextInt(256), Random().nextInt(256), Random().nextInt(256))
 		}
 	}
