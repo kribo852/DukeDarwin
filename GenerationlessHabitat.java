@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class HighEndHabitat extends Habitat{
+public class GenerationlessHabitat extends Habitat{
 		final int saveinterval = 15;
 		final int habitatsize=25;
 		Thread[] threads= new Thread[3];

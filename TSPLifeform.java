@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.io.File;
 import java.util.Collection;
 
-class TSPLifeform extends Lifeform {
+class TSPLifeform extends Lifeform<Integer, ArrayList<Integer>> {
 	
 	static double[][] coordinates;
 	static double initialscore;
 	double length;
 	
 	//sets the genome 
-	public TSPLifeform(final Collection genome){
+	public TSPLifeform(final ArrayList<Integer> genome){
 		super(genome);
 
 		if(coordinates==null){
@@ -28,12 +28,12 @@ class TSPLifeform extends Lifeform {
 	}
 	
 	//sexual reproduction
-	public ArrayList<Integer> mutate(final Collection genome1, final Collection genome2){
+	public ArrayList<Integer> mutate(final ArrayList<Integer> genome1, final ArrayList<Integer> genome2){
 		return mutate(genome1);
 	}
 	
 	//asexual reproduction
-	public ArrayList<Integer> mutate(final Collection genome){
+	public ArrayList<Integer> mutate(final ArrayList<Integer> genome){
 		ArrayList<Integer> rtn=new ArrayList<Integer>();
 		rtn.addAll(genome);
 			

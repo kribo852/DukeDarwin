@@ -37,7 +37,7 @@ class VindtunnelLife extends Lifeform<Double, ArrayList<Double>>{
 	}
 
 	public void start() {
-		new HighEndHabitat().start(this.getClass());	
+		new GenerationlessHabitat().start(this.getClass());	
 	}
 
 	public ArrayList<Double> mutate(final ArrayList<Double> genome1, final ArrayList<Double> genome2) {

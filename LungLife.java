@@ -32,7 +32,7 @@ public class LungLife extends Lifeform<Boolean, ArrayList<Boolean>> {
 	}
 	
 	public void start() {
-		new HighEndHabitat().start(this.getClass());	
+		new GenerationlessHabitat().start(this.getClass());	
 	}
 
 	@Override
