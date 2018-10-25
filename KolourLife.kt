@@ -7,7 +7,7 @@ Test of a Kotlin lifeform. Tries to maximize the sum of minimum distance between
 Extends Lifeform template.
 **/
 
-private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList<Color>>(genome) {
+private class KolourLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList<Color>>(genome) {
 
 	val numberofcolours: Int
 	var sumdistance : Double
@@ -64,10 +64,9 @@ private class KotlinLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList
 		for(i in 1..numberofcolours-8) rtn.add(Color(Random().nextInt(256), Random().nextInt(256), Random().nextInt(256)))
 		genome = rtn
 		run();
-		println("log(10): ${Math.log(10.0)}")
 		println("Baseline: ${sumdistance}")
 		println("Number of nodes: ${rtn.size}")
-		println("sqrt(64²+64²+64²): ${Math.sqrt(64.0*64.0+64.0*64.0+64.0*64.0)}")
+		println("sqrt(64²+64²+64²): ${Math.sqrt(64.0*64.0+64.0*64.0+64.0*64.0)} \n")
 		return rtn;
 	}
 
