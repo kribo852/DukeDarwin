@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+This is the class to extend to make your own lifeform expressing a particular problem and testing solutions to it. 
+**/
 abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
 	
 	T genome;
@@ -24,8 +27,8 @@ abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
 	
 	public abstract T newGenome();//returns a new genome
 	
+	//override this if a custom habitat is wanted
 	public void start() {
 		new RobustHabitat().start(this.getClass());	
-	}
-	
+	}	
 }
