@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.ArrayList; 
+import app.Lifeform;
+import app.Habitat;
 
 class Main{
 

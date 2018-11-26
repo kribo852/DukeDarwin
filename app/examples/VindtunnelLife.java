@@ -1,3 +1,5 @@
+package app.examples;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -7,17 +9,20 @@ import java.awt.Color;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import app.Lifeform;
+
+import app.GenerationlessHabitat;
+
 /**
-Organism trying to optimize air-flow through a section hitting a backplate. When the air-particles hit the plate they give off their energy.
-the genome consists of 4 decimal numbers a,b,c,d used in the formula: a + b*x^(1/2) + c*ln(d*x+1) + d*x^2 describing the walls of the section.
-the upper wall is mirrored to give the lower wall- 
-
-Derivate of formula a + b*x^(1/2) + c*ln(d*x+1) + d*x^2 is used to determine tilt which determines how particles bounce against the walls (using some linear algebra).
-
-
+*Organism trying to optimize air-flow through a section hitting a backplate. When the air-particles hit the plate they give off their energy.
+*the genome consists of 4 decimal numbers a,b,c,d used in the formula: a + b*x^(1/2) + c*ln(d*x+1) + d*x^2 describing the walls of the section.
+*the upper wall is mirrored to give the lower wall- 
+*
+*Derivate of formula a + b*x^(1/2) + c*ln(d*x+1) + d*x^2 is used to determine tilt which determines how particles bounce against the walls (using some linear algebra).
+*
 **/
 
-class VindtunnelLife extends Lifeform<Double, ArrayList<Double>>{
+public class VindtunnelLife extends Lifeform<Double, ArrayList<Double>>{
 
 	final Random RND = new Random();
 	final int size = 1000; 

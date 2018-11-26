@@ -1,9 +1,11 @@
+package app.examples;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collection;
+import app.Lifeform;
 
-
-final class BallWeight extends Lifeform<Integer, ArrayList<Integer>> {
+public class BallWeight extends Lifeform<Integer, ArrayList<Integer>> {
 	
 	double score=0;
 	

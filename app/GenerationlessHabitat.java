@@ -1,3 +1,5 @@
+package app;
+
 import java.lang.Thread;
 import java.util.Random;
 import java.util.Collection;

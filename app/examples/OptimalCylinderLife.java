@@ -1,8 +1,12 @@
+package app.examples;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class OptimalCylinderLife extends Lifeform<Double, ArrayList<Double>>{
+import app.Lifeform;
+
+public class OptimalCylinderLife extends Lifeform<Double, ArrayList<Double>>{
 	Random RND=new Random();
 	
 	public OptimalCylinderLife(final ArrayList<Double> genome){

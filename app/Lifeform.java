@@ -1,12 +1,14 @@
+package app;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
-This is the class to extend to make your own lifeform expressing a particular problem and testing solutions to it. 
+*This is the class to extend to make your own lifeform expressing a particular problem and testing solutions to it. 
 **/
-abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
+public abstract class Lifeform<E, T extends Collection<E>> implements Runnable {
 	
-	T genome;
+	protected T genome;
 		
 	//sets the genome 
 	public Lifeform(final T genome){

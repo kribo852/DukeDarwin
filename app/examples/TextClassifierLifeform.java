@@ -1,3 +1,5 @@
+package app.examples;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -5,8 +7,9 @@ import java.io.BufferedReader;
 import java.io.FileReader; 
 import java.io.IOException; 
 
+import app.Lifeform;
 
-class TextClassifierLifeform extends Lifeform<StringScore, ArrayList<StringScore>> {
+public class TextClassifierLifeform extends Lifeform<StringScore, ArrayList<StringScore>> {
 	 
 	 double score = 0;
 	 

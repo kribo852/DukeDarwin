@@ -1,13 +1,17 @@
+package app.examples
+
 import java.awt.Color
 import java.util.Random
 import java.lang.Math
 
+import app.Lifeform
+
 /**
-Test of a Kotlin lifeform. Tries to maximize the sum of minimum distance between |numberofcolours| colours.
-Extends Lifeform template.
+*Test of a Kotlin lifeform. Tries to maximize the sum of minimum distance between |numberofcolours| colours.
+*Extends Lifeform template.
 **/
 
-private class KolourLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList<Color>>(genome) {
+public class KolourLife(genome : ArrayList<Color>?) : Lifeform<Color, ArrayList<Color>>(genome) {
 
 	val numberofcolours: Int
 	var sumdistance : Double

@@ -1,3 +1,5 @@
+package app.examples;
+
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Random;
@@ -5,7 +7,9 @@ import java.util.ArrayList;
 import java.io.File;
 import java.util.Collection;
 
-class TSPLifeform extends Lifeform<Integer, ArrayList<Integer>> {
+import app.Lifeform;
+
+public class TSPLifeform extends Lifeform<Integer, ArrayList<Integer>> {
 	
 	static double[][] coordinates;
 	static double initialscore;

@@ -1,9 +1,11 @@
+package app.examples;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collection;
+import app.Lifeform;
 
-
-class OptimalPyramidLife extends Lifeform<Double, ArrayList<Double>>{
+public class OptimalPyramidLife extends Lifeform<Double, ArrayList<Double>>{
 	Random RND=new Random();
 	
 	public OptimalPyramidLife(final ArrayList<Double> genome){

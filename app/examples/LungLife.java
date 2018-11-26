@@ -1,3 +1,5 @@
+package app.examples;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -18,6 +20,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import java.awt.Graphics;
+
+import app.Lifeform;
+import app.GenerationlessHabitat;
 
 public class LungLife extends Lifeform<Boolean, ArrayList<Boolean>> {
 
