@@ -21,7 +21,8 @@ Or similarly for a Kotlin project:
 
 **compile**
 
-	$kotlinc Starter.kt Main.java app/Lifeform.java app/Habitat.java app/examples/KolourLife.kt
+	$kotlinc Starter.kt app/examples/KolourLife.kt
+	$javac Main.java
 
 **Run**
 
