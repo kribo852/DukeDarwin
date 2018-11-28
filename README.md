@@ -9,27 +9,23 @@ To run project as is:
 **Compile main**
 	$javac Main.java
 	
-**Compile habitat** (either RobustHabitat or HighEndHabitat depending on Lifeform specification (or own implementation)).
-
-	$javac HighEndHabitat.java
-	
 **Compile lifeform** (for example)
 
-	$javac LungLife.java  
+	$javac app/examples/VindtunnelLife.java 
 	
 **Run**
 
-	$java Main LungLife
+	$java Main app.examples.VindtunnelLife
 	
 Or similarly for a Kotlin project:
 
 **compile**
 
-	$kotlinc Starter.kt Main.java Lifeform.java Habitat.java KotlinLife.kt
+	$kotlinc Starter.kt Main.java app/Lifeform.java app/Habitat.java app/examples/KolourLife.kt
 
 **Run**
 
-	$kotlin StarterKt KotlinLife
+	$kotlin StarterKt app.examples.KolourLife
 
 ----------------------------------------------
 For more information, please see the wiki pages.
