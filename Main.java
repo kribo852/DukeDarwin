@@ -33,7 +33,7 @@ class Main{
 	protected static Lifeform newInstance(Class lifeformClass){
 		try {
 			Constructor ct = lifeformClass.getConstructors()[0];//lifeform has only one constructor
-			Object[] argslist=new Object[]{new ArrayList<>()};
+			Object[] argslist=new Object[]{null};
 			return(Lifeform)ct.newInstance(argslist);
 		}catch(Exception e){
 			System.out.println("error "+e);
