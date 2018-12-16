@@ -12,11 +12,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import java.io.IOException;
-import java.io.File;
-
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import java.awt.Graphics;
