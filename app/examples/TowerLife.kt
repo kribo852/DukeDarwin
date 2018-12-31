@@ -23,7 +23,7 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 	}
 
 	override public fun run(): Unit{
-    	internalscore = testweight(genome).toDouble()
+    	internalscore = testweight(foldoutGenome(genome)).toDouble()
 	}
 
 	override public fun mutate(genome1 : HashSet<Construction>, genome2 : HashSet<Construction>) : HashSet<Construction> {
@@ -45,23 +45,26 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 				var key = construction.key
 				var value = construction.value
 
-				if( Random().nextInt(genome.size) == 0 ) {
-					if( !value ) {
-						rtn.add(key)
-					} 
-				} else {
-					if( value ) {
-						rtn.add(key)
+				if(key.x >= 0) {
+					if( Random().nextInt(genome.size) == 0 ) {
+						if( !value ) {
+							rtn.add(key)
+						} 
+					} else {
+						if( value ) {
+							rtn.add(key)
+						}
 					}
 				}
 			}
 			numberofmutations++
 		}
-		
+		if(Random().nextInt(10000) == 0) {
+			rtn.add(Construction(0, highestPoint(rtn) + 1));
+		}
 		if(Random().nextInt(1250) == 0) {
 			return clearUnusedGenome(rtn)
 		}
-
 		return rtn
 	}
 	
@@ -72,8 +75,10 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 		jframe.setSize(size, size)		
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
 
-		val sortedbyheight : List<Construction> = genome.sortedByDescending( {a -> a.y } )
+		val sortedbyheight : List<Construction> = foldoutGenome(genome).sortedByDescending( {a -> a.y } )
 		val pressures = HashMap<Construction, Double>()
+		val highestpoint = highestPoint(genome)
+		val scale = size/(4 + highestpoint)
 
 		sortedbyheight.forEach( { a -> pressures.put(Construction(a.x, a.y), 1.0) } )
 		sortedbyheight.forEach( { a -> addPressureToMap(pressures, a.x, a.y) } )
@@ -81,8 +86,7 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 		jframe.getGraphics().setColor(Color.black)
 		jframe.getGraphics().fillRect(0, 0, size, size)
 
-		pressures.forEach( {a -> paintBlock(jframe.getGraphics(), a.key.x, a.key.y, a.value) } )
-
+		pressures.forEach( {a -> paintBlock(jframe.getGraphics(), a.key.x, a.key.y, scale, a.value) } )
 	}
 
 	override public fun getScore(): Double{
@@ -134,17 +138,15 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 		}
 	}
 
-	fun paintBlock(graphics : Graphics, x : Int, y: Int, weight: Double) : Unit {
+	fun paintBlock(graphics : Graphics, x : Int, y: Int, scale: Int, weight: Double) : Unit {
 		graphics.setColor(Color( (255*weight/maxweight).toInt(), (255-255*weight/maxweight).toInt() , 0))
-		graphics.fillRect(500+x*10, 750-y*10, 10, 10)
+		graphics.fillRect(scale+500+x*scale, -2*scale+1000-y*scale, scale, scale)
 	}
 
 	fun clearUnusedGenome(genome : HashSet<Construction>): HashSet<Construction>{
 		val rtn = HashSet<Construction>()
-		val highestconstruction = genome.maxBy( {a -> a.y} )
-		if(highestconstruction != null) {
-			clearUnusedGenome(genome, highestconstruction.x, highestconstruction.y, rtn)
-		}
+		val highestconstruction = genome.maxBy( {a -> a.y} );
+		clearUnusedGenome(genome, highestconstruction?.x ?: -1, highestconstruction?.y ?: -1, rtn)
 		return rtn
 	}
 
@@ -157,6 +159,18 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 				clearUnusedGenome(genome, x+i, y-1, rtn)
 			}			
 		}
+	}
+
+	fun foldoutGenome(genome : HashSet<Construction>): HashSet<Construction> {
+		val rtn = HashSet<Construction>()
+
+		genome.forEach({a -> rtn.add(Construction(a.x, a.y)); rtn.add(Construction(-a.x, a.y)); });
+
+		return rtn;
+	}
+
+	fun highestPoint(genome : HashSet<Construction>): Int{
+		return genome.maxBy({ a -> a.y })?.y ?: -1;
 	}
 
 }
