@@ -26,7 +26,7 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 	}
 
 	override public fun run(){
-    	internalscore = testweight(foldoutGenome(genome)).toDouble()
+    	internalscore = testweight(genome).toDouble()
 	}
 
 	fun testweight(genome : HashSet<Construction>) : Int{
@@ -67,10 +67,29 @@ public class TowerLife(genome : HashSet<Construction>?) : Lifeform<Construction,
 		}
 		if(Random().nextInt(1250) == 0) {
 			val highestconstruction = rtn.maxBy( {a -> a.y} ) ?: Construction(0, -1)
-			rtn.add(Construction(Math.max(0, highestconstruction.x-1), highestconstruction.y + 1))
+			rtn.add(Construction(Math.max(0, highestconstruction.x-1), highestconstruction.y+1))
 		}
 		if(Random().nextInt(12500) == 0) {
 			return clearUnusedGenome(rtn)
+		}
+		if(Random().nextInt(100) == 0) {
+			return addIdenticalLayer(rtn)
+		}
+		return rtn
+	}
+
+	fun addIdenticalLayer(genome : HashSet<Construction>) : HashSet<Construction>{
+		val rtn = HashSet<Construction>()
+		val hightOfCopy = 1 + Random().nextInt(highestPoint(genome))
+		for(block in genome) {
+			if(block.y > hightOfCopy) {
+				rtn.add(Construction(block.x, block.y+1))
+			} else if(block.y == hightOfCopy) {
+				rtn.add(Construction(block.x, block.y+1))
+				rtn.add(Construction(block.x, block.y))
+			} else {
+				rtn.add(Construction(block.x, block.y))
+			}
 		}
 		return rtn
 	}
