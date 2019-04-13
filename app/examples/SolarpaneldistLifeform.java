@@ -7,12 +7,19 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Arrays;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics;
+
+import javax.swing.JFrame;
+
 public class SolarpaneldistLifeform extends Lifeform<Shape, ArrayList<Shape>> {
 	double score = 0;
 	static final double[] readings = 
 	new double[]{55,150,120,115,310,475,1850,2200,2620,3000,3025,3025,3025,3025,3025,3000,2620,2200,1850,475,310,115,120,150,55};  
 	static final double middlepoint = readings.length/2.0-0.5;// to match indicies of a for loop. length 15 -> 0..14 -> -7..7
 	static final double peakvalue = 3025;
+	static JFrame jframe;
 
 	public SolarpaneldistLifeform(final ArrayList<Shape> genome){
 		super(genome);
@@ -47,12 +54,23 @@ public class SolarpaneldistLifeform extends Lifeform<Shape, ArrayList<Shape>> {
 	
 	@Override
 	public void output() {
+		if(jframe == null) {
+			jframe = new JFrame();
+			jframe.setVisible(true);
+			jframe.setSize(1000, 1000);		
+			jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
+
+		BufferedImage bufferedImage1 = new BufferedImage(1000, 500, 1);
+		BufferedImage bufferedImage2 = new BufferedImage(1000, 500, 1);
+		
 		System.out.println("Score: "+score);
-		System.out.println("Cost for second degree equation: "+genome.get(0).cost(readings, middlepoint));
-		genome.get(0).printdata();
+		genome.get(0).printdata(bufferedImage1, readings, middlepoint);
 		System.out.println();
-		System.out.println("Cost for custom shape: "+genome.get(1).cost(readings, middlepoint));
-		genome.get(1).printdata();
+		genome.get(1).printdata(bufferedImage2, readings, middlepoint);
+
+		jframe.getGraphics().drawImage(bufferedImage1, 0, 0, null);
+		jframe.getGraphics().drawImage(bufferedImage2, 0, 500, null);
 	}
 
 	@Override	
@@ -76,12 +94,13 @@ interface Shape{
 
 	public double area();	
 
-	public void printdata();
+	public void printdata(final BufferedImage bufferedImage, final double[] readings, final double middlepoint);
 
 	public Shape mutate(final double[] readings, final double peakvalue);
+
 }
 
-class SeconddegreeEquation implements Shape{
+final class SeconddegreeEquation implements Shape{
 	double hightscaler;// 
 	double roots;//one positive and one negative
 
@@ -100,13 +119,9 @@ class SeconddegreeEquation implements Shape{
 		double cost = 0;
 		for (int i=0; i<readings.length; i++) {
 			double position = i-middlepoint;
-			double expectedheight = -hightscaler*
-			(position - roots)*
-			(position + roots);
-			expectedheight = Math.max(0, expectedheight);
-			cost += Math.log(0.01+Math.abs(readings[i]-expectedheight));
+			cost += Math.pow(readings[i]-getHeightAtPosition(position), 2);
 		}
-		return cost;
+		return Math.sqrt(cost);
 	}
 
 	@Override
@@ -116,10 +131,26 @@ class SeconddegreeEquation implements Shape{
 	}
 
 	@Override
-	public void printdata(){
+	public void printdata(final BufferedImage bufferedImage, final double[] readings, final double middlepoint){
+		System.out.println("Cost for second degree equation: "+cost(readings, middlepoint));
 		System.out.println("Area: " + area());
 		System.out.println("Scaler: " + hightscaler);
 		System.out.println("Roots: +-" + roots/2 +" hours");
+
+		Graphics graphics = bufferedImage.getGraphics();
+		graphics.setColor(Color.RED);
+		double scale = 0.1;
+		
+		for(int i=0; i<bufferedImage.getWidth(); i++) {
+			double position = ((double)i/bufferedImage.getWidth())*readings.length;
+			double height = scale*getHeightAtPosition(position-middlepoint);
+			graphics.fillRect(i, bufferedImage.getHeight()-(int)height, 1, 1);
+		}
+		graphics.setColor(Color.blue);
+		for(int i=0; i<readings.length; i++) {
+			graphics.fillRect((i*bufferedImage.getWidth())/readings.length-5, 
+				bufferedImage.getHeight()-5-(int)(scale*readings[i]), 10, 10);
+		}
 	}
 
 	@Override
@@ -142,9 +173,17 @@ class SeconddegreeEquation implements Shape{
 		}
 		return child;
 	}
+
+	private double getHeightAtPosition(final double position) {
+		double expectedheight = -hightscaler*
+			(position - roots)*
+			(position + roots);
+			expectedheight = Math.max(0, expectedheight);
+		return expectedheight;
+	}
 }
 
-class CustomShape implements Shape{
+final class CustomShape implements Shape{
 	double height;
 	double boxlength;
 	double expcoefficient;
@@ -166,17 +205,9 @@ class CustomShape implements Shape{
 		double cost = 0;
 		for (int i=0; i<readings.length; i++) {
 			double position = i-middlepoint;
-			double expectedheight;
-			if(Math.abs(position) < boxlength) {
-				expectedheight = height;
-			} else if (position > 0) {
-				expectedheight = height*Math.exp(-expcoefficient*(position-boxlength));
-			} else {
-				expectedheight = height*Math.exp(expcoefficient*(position+boxlength));
-			}
-			cost += Math.log(0.01+Math.abs(readings[i]-expectedheight));
+			cost += Math.pow((readings[i]-getHeightAtPosition(position)), 2);
 		}
-		return cost;
+		return Math.sqrt(cost);
 	}
 
 	@Override
@@ -186,8 +217,24 @@ class CustomShape implements Shape{
 	}
 
 	@Override
-	public void printdata(){
+	public void printdata(final BufferedImage bufferedImage, final double[] readings, final double middlepoint) {
+		System.out.println("Cost for custom shape: "+cost(readings, middlepoint));
 		System.out.println("Area: " + area());
+
+		Graphics graphics = bufferedImage.getGraphics();
+		graphics.setColor(Color.RED);
+		double scale = 0.1;
+		
+		for(int i=0; i<bufferedImage.getWidth(); i++) {
+			double position = ((double)i/bufferedImage.getWidth())*readings.length;
+			double height = scale*getHeightAtPosition(position-middlepoint);
+			graphics.fillRect(i, bufferedImage.getHeight()-(int)height, 1, 1);
+		}
+		graphics.setColor(Color.blue);
+		for(int i=0; i<readings.length; i++) {
+			graphics.fillRect((i*bufferedImage.getWidth())/readings.length-5, 
+				bufferedImage.getHeight()-5-(int)(scale*readings[i]), 10, 10);
+		}
 	}
 
 	@Override
@@ -201,12 +248,29 @@ class CustomShape implements Shape{
 		if(choice == 0) {
 			child = new CustomShape(height, boxlength, expcoefficient);
 		} else if(choice == 1){
-			child = new CustomShape((0.95+RND.nextDouble()*0.1)*height, boxlength, expcoefficient);
+			child = new CustomShape(mutateScale()*height, mutateScale()*boxlength, expcoefficient);
 		} else if(choice == 2){
-			child = new CustomShape(height, (0.95+RND.nextDouble()*0.1)*boxlength, expcoefficient);
+			child = new CustomShape(height, mutateScale()*boxlength, mutateScale()*expcoefficient);
 		} else {
-			child = new CustomShape(height, boxlength, (0.95+RND.nextDouble()*0.1)*expcoefficient);
+			child = new CustomShape(mutateScale()*height, boxlength, mutateScale()*expcoefficient);
 		}
 		return child;
+	}
+
+	private double mutateScale(){
+		Random RND = new Random();
+		return (0.99+RND.nextDouble()*0.02);
+	}
+
+	private double getHeightAtPosition(final double position) {
+		double expectedheight;
+			if(Math.abs(position) < boxlength) {
+				expectedheight = height;
+			} else if (position > 0) {
+				expectedheight = height*Math.exp(-expcoefficient*(position-boxlength));
+			} else {
+				expectedheight = height*Math.exp(expcoefficient*(position+boxlength));
+			}
+		return expectedheight;
 	}
 }
