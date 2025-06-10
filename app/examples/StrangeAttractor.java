@@ -20,14 +20,14 @@ import java.awt.Graphics;
 import app.Lifeform;
 import app.RobustHabitat;
 
-public class StrangeAttractor extends Lifeform<Double, ArrayList<Double>> {
+public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<StrangeAttractor.Node>> {
 
 	double score;
 	int screendimension = 800;
 	
 	static JFrame jframe;
 
-	public StrangeAttractor(ArrayList<Double> genome) {
+	public StrangeAttractor(ArrayList<Node> genome) {
 		super(genome);
 		score = 0;
 	}
@@ -37,15 +37,13 @@ public class StrangeAttractor extends Lifeform<Double, ArrayList<Double>> {
 		score = 0;
 		int [][] buckets = new int[100][100];
 
-		double x = 0.5;
-		double y = 0.5;
+		double x = 0;
+		double y = 0;
 		double frequencyhits = 1;
 
 		for(int i=0; i<50000; i++) {
-			x = getXprim(x, y);
-			y = getYprim(x, y);
-			//System.out.println("x "+x);
-			//System.out.println("y "+y);
+			x = genome.get(0).getValue(x, y);
+			y = genome.get(1).getValue(x, y);
 
 			if ((0.5 + x) >= 0 && (0.5 + x) < 1 && (0.5 + y) >= 0 && (0.5 + y) < 1) {
 				buckets[(int)(100*(0.5 + x))][(int)(100*(0.5 + y))] ++;
@@ -63,30 +61,17 @@ public class StrangeAttractor extends Lifeform<Double, ArrayList<Double>> {
 	}
 
 	@Override
-	public ArrayList<Double> mutate(ArrayList<Double> genome1, ArrayList<Double> genome2) {
+	public ArrayList<Node> mutate(ArrayList<Node> genome1, ArrayList<Node> genome2) {
 		return null;
 	}
 
 	@Override
-	public ArrayList<Double> mutate(ArrayList<Double> genome) {
-		if(new Random().nextInt(100) == 0)
-			return newGenome();
+	public ArrayList<Node> mutate(ArrayList<Node> genome) {
+		ArrayList<Node> rtn = new ArrayList<Node>();
 
-		ArrayList<Double> rtn = new ArrayList<Double>();
-
-		int type = new Random().nextInt(2);
-		for(int i=0; i<genome.size(); i++) {
-			double offset = 0;
-
-			if(type == 0 && new Random().nextInt(10) == 0) {
-				offset = (new Random().nextDouble() - new Random().nextDouble());
-			}
-			if(type == 1) {
-				offset = 0.01 * (new Random().nextDouble() - new Random().nextDouble());
-			}
-
-			rtn.add(genome.get(i) + offset);
-		}
+		rtn.add(genome.get(0).mutate());
+		rtn.add(genome.get(1).mutate());
+		
 		return rtn;
 	}
 
@@ -110,38 +95,88 @@ public class StrangeAttractor extends Lifeform<Double, ArrayList<Double>> {
 		g.fillRect(0, 0, screendimension, screendimension);
 
 
-		g.setColor(Color.ORANGE);
+		g.setColor(new Color(255, 255, 0, 25));
 		
-		double x = 0.5;
-		double y = 0.5;
+		double x = 0;
+		double y = 0;
 
 		for(int i=0; i<50000; i++) {
-			x = getXprim(x, y);
-			y = getYprim(x, y);
+			x = genome.get(0).getValue(x, y);
+			y = genome.get(1).getValue(x, y);
 
-			g.fillRect(400+(int)(200*x), 400+(int)(200*y), 1, 1);
+			g.fillRect(400+(int)(325*x), 400+(int)(325*y), 1, 1);
 		}
 
 	}
 
 	@Override
-	public ArrayList<Double> newGenome() {
-		ArrayList<Double> genes = new ArrayList<Double>();
+	public ArrayList<Node> newGenome() {
+		ArrayList<Node> genes = new ArrayList<Node>();
 		
-		for(int i=0; i<14; i++){
-			genes.add(2*(new Random().nextDouble()-new Random().nextDouble()));
-			
-		}
+		genes.add(Node.generate());
+		genes.add(Node.generate());
+
 		return genes;
 	}
 
-	private double getXprim(double x, double y) {
-		return genome.get(1)*x + genome.get(2)*x*x + genome.get(3)*y + genome.get(4)*y*y + genome.get(5)*x*y + x*x*x*genome.get(12);
-	}
+	public static class Node {
+		double constant;
 
-	private double getYprim(double x, double y) {
-		return genome.get(7)*x + genome.get(8)*x*x + genome.get(9)*y + genome.get(10)*y*y + genome.get(11)*x*y + y*y*y*genome.get(13);
-	}
+		Node xUp;
+		Node yUp;
 
+		public double getValue(double x, double y) {
+			double rtn =  constant + 
+			(xUp != null ? x * xUp.getValue(x, y) : 0) +  
+			(yUp != null ? y * yUp.getValue(x, y) : 0);
+
+			//System.out.println("rtn: " + rtn);
+			return rtn;
+		}
+
+		public Node mutate() {
+			if(new Random().nextInt(500) == 0 ) {
+				return generate();
+			}
+
+			double c = constant;
+
+			if(new Random().nextInt(10) == 0) {
+				c += (new Random().nextGaussian());
+			}
+			
+			Node mxUp = xUp != null ? xUp.mutate(): null;
+			Node myUp = yUp != null ? yUp.mutate(): null;
+
+			return new Node(c, mxUp, myUp);
+		}
+
+		private Node(double c, Node subXup, Node subYup) {
+			constant = c;
+			xUp = subXup;
+			yUp = subYup;
+		}
+
+		private Node() {
+
+		}
+
+		public static Node generate() {
+			Node rtn = new Node();
+			rtn.generate(4);
+
+			return rtn;
+		}
+
+		private void generate(int layersLeft) {
+			constant = 1.5 * (new Random().nextGaussian());
+			if (layersLeft > 0) {
+				xUp = new Node();
+				yUp = new Node();
+				xUp.generate(layersLeft-1);
+				yUp.generate(layersLeft-1);
+			}
+		} 
+	}
 
 }
