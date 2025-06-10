@@ -49,12 +49,14 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 				buckets[(int)(100*(0.5 + x))][(int)(100*(0.5 + y))] ++;
 				frequencyhits ++;
 			}
+
 		}
 
 		for (int i=0; i<buckets.length; i++) {
 			for (int j=0; j<buckets[0].length; j++) {
 				if(buckets[i][j] != 0 ) {
-					score -= (buckets[i][j]/frequencyhits) * Math.log(buckets[i][j]/frequencyhits);
+					score -= (buckets[i][j]/frequencyhits) * Math.log(buckets[i][j]/frequencyhits) * 
+					Math.log(frequencyhits);
 				}
 			}	
 		}
@@ -95,16 +97,16 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 		g.fillRect(0, 0, screendimension, screendimension);
 
 
-		g.setColor(new Color(255, 255, 0, 25));
+		g.setColor(new Color(255, 100, 0, 25));
 		
 		double x = 0;
 		double y = 0;
 
-		for(int i=0; i<50000; i++) {
+		for(int i=0; i<100000; i++) {
 			x = genome.get(0).getValue(x, y);
 			y = genome.get(1).getValue(x, y);
 
-			g.fillRect(400+(int)(325*x), 400+(int)(325*y), 1, 1);
+			g.fillRect(400+(int)(400*x), 400+(int)(400*y), 1, 1);
 		}
 
 	}
@@ -135,18 +137,25 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 		}
 
 		public Node mutate() {
-			if(new Random().nextInt(500) == 0 ) {
-				return generate();
-			}
+			return mutate(new Random().nextInt(2));
+		}
 
+		private Node mutate(int mode) {
 			double c = constant;
 
-			if(new Random().nextInt(10) == 0) {
-				c += (new Random().nextGaussian());
+			if(mode == 0) {
+				if(new Random().nextInt(10) == 0) {
+					c = (new Random().nextGaussian());	
+				} else {
+					c += (new Random().nextGaussian());
+				}
+			} 
+			if(mode == 1) {
+				c += 0.1*(new Random().nextGaussian())*(new Random().nextGaussian());
 			}
 			
-			Node mxUp = xUp != null ? xUp.mutate(): null;
-			Node myUp = yUp != null ? yUp.mutate(): null;
+			Node mxUp = xUp != null ? xUp.mutate(mode) : null;
+			Node myUp = yUp != null ? yUp.mutate(mode) : null;
 
 			return new Node(c, mxUp, myUp);
 		}
