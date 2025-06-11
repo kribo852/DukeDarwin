@@ -137,7 +137,7 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 		}
 
 		public Node mutate() {
-			return mutate(new Random().nextInt(2));
+			return mutate(new Random().nextInt(3));
 		}
 
 		private Node mutate(int mode) {
@@ -152,6 +152,10 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 			} 
 			if(mode == 1) {
 				c += 0.1*(new Random().nextGaussian())*(new Random().nextGaussian());
+			}
+
+			if(mode == 2) {
+				c *= (0.999+0.002*(new Random().nextDouble()));
 			}
 			
 			Node mxUp = xUp != null ? xUp.mutate(mode) : null;
@@ -172,7 +176,7 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 
 		public static Node generate() {
 			Node rtn = new Node();
-			rtn.generate(4);
+			rtn.generate(5);
 
 			return rtn;
 		}
