@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.HashMap;
 
 import java.util.Random;
@@ -35,30 +36,23 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 	@Override
 	public void run() {
 		score = 0;
-		int [][] buckets = new int[100][100];
+		Set<String> coordinatePositions = new HashSet<>();
 
 		double x = 0;
 		double y = 0;
-		double frequencyhits = 1;
 
-		for(int i=0; i<50000; i++) {
+		for(int i=0; i<50000 && Math.hypot(x, y) < 12; i++) {
 			x = genome.get(0).getValue(x, y);
 			y = genome.get(1).getValue(x, y);
 
-			if ((0.5 + x) >= 0 && (0.5 + x) < 1 && (0.5 + y) >= 0 && (0.5 + y) < 1) {
-				buckets[(int)(100*(0.5 + x))][(int)(100*(0.5 + y))] ++;
-				frequencyhits ++;
+			String coord = (int)(x*750)+"x"+(int)(y*750);
+			if(!coordinatePositions.contains(coord)) {
+				coordinatePositions.add(coord);
+				score ++;
+			} else {
+				break;
 			}
-
-		}
-
-		for (int i=0; i<buckets.length; i++) {
-			for (int j=0; j<buckets[0].length; j++) {
-				if(buckets[i][j] != 0 ) {
-					score -= (buckets[i][j]/frequencyhits) * Math.log(buckets[i][j]/frequencyhits) * 
-					Math.log(frequencyhits);
-				}
-			}	
+			
 		}
 	}
 
@@ -137,6 +131,10 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 		}
 
 		public Node mutate() {
+			if(new Random().nextInt(200) ==0 ) {
+				return generate();
+			}
+
 			return mutate(new Random().nextInt(3));
 		}
 
@@ -150,11 +148,11 @@ public class StrangeAttractor extends Lifeform<StrangeAttractor.Node, ArrayList<
 					c += (new Random().nextGaussian());
 				}
 			} 
-			if(mode == 1) {
+			if(mode == 1 && new Random().nextInt(25) == 0) {
 				c += 0.1*(new Random().nextGaussian())*(new Random().nextGaussian());
 			}
 
-			if(mode == 2) {
+			if(mode == 2 && new Random().nextInt(10) == 0) {
 				c *= (0.999+0.002*(new Random().nextDouble()));
 			}
 			
