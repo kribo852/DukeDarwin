@@ -8,3 +8,4 @@ GeneticLibraryTest.
 
 
 ## API
+The api is made to look like my other libraries for genetic algorithms, for Rust and Python. The implementation of the libraries may however differ.
