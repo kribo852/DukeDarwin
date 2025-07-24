@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GeneticLibraryTest {
     
+    //this test tries to maximize the area of a rectangle, where the sum of the lengths of the sides,
+    // of the rectangle is constant
     @Test void testSolveMaximumArea() {
         GeneticLibrary<double[]> geneticLibrary = new GeneticLibrary<double[]>(double[].class);
         
