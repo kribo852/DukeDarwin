@@ -3,14 +3,21 @@
 ## A library for running genetic algorithms
 
 ## Use
-Call the functions `run_algorithm` or `simplified_run` in the class GeneticLibrary. There is an example of how to use the library in the test, 
-GeneticLibraryTest.
+Call the functions `run_algorithm` or `simplified_run` in the class GeneticLibrary. This runs the algorithm
+
+
+## Examples
+| Problem name | File name | implemented | wikipedia link |
+|--------------|-----------|-------------|----------------|
+| Maximimize volume of a cylinder | MaximizeCylinderVolumeTest.java | ✅️ |  |
+| Eight queens problem |  | ❌ | https://en.wikipedia.org/wiki/Eight_queens_puzzle |
+
 
 
 ## API
 The api is made to look similar to my other libraries for genetic algorithms, for Rust and Python. The implementation of the libraries may however differ.
 
-There are two function that you can call in the library, in order to run the algorithm, the `simplified_run` is supposed to be a bit smaller.
+There are two function that you can call in the library, in order to run the algorithm, the `simplified_run` is supposed to be a bit easier to use.
 
 ```java
 public GenomeType simplified_run(Supplier<GenomeType> newGenomeSupplier, 
@@ -20,6 +27,15 @@ public GenomeType simplified_run(Supplier<GenomeType> newGenomeSupplier,
 ```
 
 ```java
+/*
+ @param Supplier<GenomeType> newGenomeSupplier. makes new genomes.
+ @param List<Function<GenomeType[], GenomeType>> mutators. list of functions mutating the genomes. 
+ @param Consumer<GenomeType> printGenome. prints a genome/solution.
+ @param ToDoubleFunction<GenomeType> scoreFunction. scores a genome, the scores are use in the selection of genomes, it tells how fit a genome is.
+ @param Predicate<GenomeType> finishPredicate. Tells whether to halt the algorithm. Use a condition to determine if you want to halt.
+
+ @return GenomeType the result of the calculation
+*/
 public GenomeType run_algorithm(Supplier<GenomeType> newGenomeSupplier, 
         List<Function<GenomeType[], GenomeType>> mutators,
         Consumer<GenomeType> printGenome,
