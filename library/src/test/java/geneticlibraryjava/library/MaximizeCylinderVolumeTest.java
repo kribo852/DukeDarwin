@@ -15,7 +15,8 @@ class MaximizeCylinderVolumeTest {
     
     //this test tries to maximize the the volume of a cylinder, where the total area is constrained to a
     //maximum value 
-    @Test void testSolveMaximizeVolume() {
+    @Test
+    void testSolveMaximizeVolume() {
         GeneticLibrary<CylinderRepresentation> geneticLibrary = 
         new GeneticLibrary<CylinderRepresentation>(CylinderRepresentation.class);
         
