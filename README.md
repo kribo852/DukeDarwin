@@ -10,7 +10,7 @@ Call the functions `run_algorithm` or `simplified_run` in the class GeneticLibra
 | Problem name | File name | implemented | wikipedia link |
 |--------------|-----------|-------------|----------------|
 | Maximimize volume of a cylinder | MaximizeCylinderVolumeTest.java | ✅️ |  |
-| Eight queens problem |  | ✅️ | https://en.wikipedia.org/wiki/Eight_queens_puzzle |
+| Eight queens problem | EightQuuensTest.java | ✅️ | https://en.wikipedia.org/wiki/Eight_queens_puzzle |
 
 
 
