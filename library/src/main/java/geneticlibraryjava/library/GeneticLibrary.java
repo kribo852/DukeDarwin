@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.lang.reflect.Array;
 
-
+//Genetic library for running genetc algorithms
 public class GeneticLibrary<GenomeType> {
 
     private Class genomeClass;
@@ -20,6 +20,7 @@ public class GeneticLibrary<GenomeType> {
         this.genomeClass = genomeClass;
     }
 
+    //Run by calling this function, this is the simplified interface
     //Be careful to copy the data when mutating the genome with the mutator function, otherwise the 
     //algorithm won´t work as expected
     public GenomeType simplified_run(Supplier<GenomeType> newGenomeSupplier, 
@@ -39,6 +40,9 @@ public class GeneticLibrary<GenomeType> {
         return run_algorithm(newGenomeSupplier, List.of(composedMutator), printGenome, scoreFunction, finishPredicate);
     }
 
+    //Run by calling this function, this interface supports both mutating a genome as well as crossing several genomes together
+    //Be careful to copy the data when mutating the genome with the mutator function, otherwise the 
+    //algorithm won´t work as expected
     public GenomeType run_algorithm(Supplier<GenomeType> newGenomeSupplier, 
         List<Function<GenomeType[], GenomeType>> mutators,
         Consumer<GenomeType> printGenome,
